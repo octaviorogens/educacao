@@ -1,0 +1,52 @@
+name: radar de pautas
+
+on:
+  schedule:
+    # 7h de Brasilia = 10h UTC
+    - cron: "0 10 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  radar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Coletar itens brutos
+        working-directory: radar-pautas
+        run: python collect.py
+
+      - name: Curar e gerar ganchos
+        working-directory: radar-pautas
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python curar.py > /tmp/ganchos_novos.json
+
+      - name: Enviar e-mail (se houver ganchos novos)
+        working-directory: radar-pautas
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          MAIL_TO:   ${{ secrets.MAIL_TO }}
+          PAGINA_URL: "https://octaviorogens.github.io/educacao/"
+        run: cat /tmp/ganchos_novos.json | python enviar_email.py
+
+      - name: Commitar dados atualizados
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add radar-pautas/data/
+          git diff --cached --quiet || git commit -m "Radar: coleta e curadoria de $(date -u +%Y-%m-%d)"
+          git push
