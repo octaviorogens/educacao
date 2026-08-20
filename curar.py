@@ -61,37 +61,37 @@ def montar_prompt(config, itens):
     experiencia = "\n".join(f"- {e}" for e in perfil["experiencia_relevante"])
 
     lista_itens = "\n\n".join(
-        f"[{i}] título: {item['titulo']}\nresumo: {item['resumo']}\nfonte: {item['fonte']}"
+        f"[{i}] t\u00edtulo: {item['titulo']}\nresumo: {item['resumo']}\nfonte: {item['fonte']}"
         for i, item in enumerate(itens)
     )
 
-    instrucao = f"""Você é assessor de imprensa e está triando notícias e achados internacionais para sugerir pautas de entrevista a jornalistas brasileiros.
+    instrucao = f"""Voc\u00ea \u00e9 assessor de imprensa e est\u00e1 triando not\u00edcias e achados internacionais para sugerir pautas de entrevista a jornalistas brasileiros.
 
 FONTE A SER OFERECIDA:
 Nome: {perfil['nome']} ({perfil['forma_de_tratamento']})
 Cargo: {perfil['cargo']}
-Formação: {perfil['formacao']}
+Forma\u00e7\u00e3o: {perfil['formacao']}
 Linha de pesquisa: {perfil['linha_de_pesquisa']}
 
-Experiência relevante com imprensa e formação:
+Experi\u00eancia relevante com imprensa e forma\u00e7\u00e3o:
 {experiencia}
 
 Temas que pode comentar com autoridade:
 {temas}
 
-CRITÉRIOS DE NOTICIABILIDADE (um item só deve ser escolhido se atender bem a pelo menos três destes):
+CRIT\u00c9RIOS DE NOTICIABILIDADE (um item s\u00f3 deve ser escolhido se atender bem a pelo menos tr\u00eas destes):
 {criterios}
 
-Abaixo está uma lista numerada de itens brutos coletados de fontes internacionais. Avalie cada um e escolha no máximo {config['max_itens_por_dia']} que atendam aos critérios, com pontuação de 0 a 10. Só inclua itens com pontuação maior ou igual a {config['limiar_pontuacao']}. Se nenhum item atingir esse nível, devolva uma lista vazia — não force a barra.
+Abaixo est\u00e1 uma lista numerada de itens brutos coletados de fontes internacionais. Avalie cada um e escolha no m\u00e1ximo {config['max_itens_por_dia']} que atendam aos crit\u00e9rios, com pontua\u00e7\u00e3o de 0 a 10. S\u00f3 inclua itens com pontua\u00e7\u00e3o maior ou igual a {config['limiar_pontuacao']}. Se nenhum item atingir esse n\u00edvel, devolva uma lista vazia \u2014 n\u00e3o force a barra.
 
 Para cada item escolhido, escreva:
-- titulo_pt: título em português, direto, sem sensacionalismo
-- resumo: 2 a 3 frases explicando o fato, em português
-- porque_curioso: 1 a 2 frases explicando por que esse fato é noticiável e curioso para o público brasileiro
-- gancho_pauta: um parágrafo pronto para copiar e colar num e-mail a um jornalista ou assessoria, em português-padrão, sem clichês de texto gerado por IA e sem travessões, conectando o fato a {perfil['forma_de_tratamento']} como fonte especializada, com naturalidade, sem exagero de autopromoção
+- titulo_pt: t\u00edtulo em portugu\u00eas, direto, sem sensacionalismo
+- resumo: 2 a 3 frases explicando o fato, em portugu\u00eas
+- porque_curioso: 1 a 2 frases explicando por que esse fato \u00e9 notici\u00e1vel e curioso para o p\u00fablico brasileiro
+- gancho_pauta: um par\u00e1grafo pronto para copiar e colar num e-mail a um jornalista ou assessoria, em portugu\u00eas-padr\u00e3o, sem clich\u00eas de texto gerado por IA e sem travess\u00f5es, conectando o fato a {perfil['forma_de_tratamento']} como fonte especializada, com naturalidade, sem exagero de autopromo\u00e7\u00e3o
 
-Responda SOMENTE com um JSON válido, sem nenhum texto antes ou depois, no formato:
-{{"escolhidos": [{{"indice": <número do item na lista>, "pontuacao": <0 a 10>, "titulo_pt": "...", "resumo": "...", "porque_curioso": "...", "gancho_pauta": "..."}}]}}
+Responda SOMENTE com um JSON v\u00e1lido, sem nenhum texto antes ou depois, no formato:
+{{"escolhidos": [{{"indice": <n\u00famero do item na lista>, "pontuacao": <0 a 10>, "titulo_pt": "...", "resumo": "...", "porque_curioso": "...", "gancho_pauta": "..."}}]}}
 
 ITENS:
 
@@ -102,7 +102,7 @@ ITENS:
 def chamar_api(config, prompt, api_key):
     corpo = json.dumps({
         "model": config["modelo_ia"],
-        "max_tokens": 4000,
+        "max_tokens": 16000,
         "messages": [{"role": "user", "content": prompt}],
     }).encode("utf-8")
 
@@ -116,7 +116,7 @@ def chamar_api(config, prompt, api_key):
         },
         method="POST",
     )
-    with urllib.request.urlopen(requisicao, timeout=120) as resposta:
+    with urllib.request.urlopen(requisicao, timeout=180) as resposta:
         return json.loads(resposta.read())
 
 
@@ -124,14 +124,24 @@ def extrair_json(texto):
     inicio = texto.find("{")
     fim = texto.rfind("}")
     if inicio == -1 or fim == -1:
-        raise ValueError("resposta da IA não contém JSON")
-    return json.loads(texto[inicio:fim + 1])
+        raise ValueError("resposta da IA n\u00e3o cont\u00e9m JSON")
+    trecho = texto[inicio:fim + 1]
+    try:
+        return json.loads(trecho)
+    except json.JSONDecodeError:
+        # tenta consertar JSON truncado: fecha colchete e chave pendentes
+        tentativa = trecho.rstrip().rstrip(",")
+        # conta chaves/colchetes abertos
+        abrir_chave = tentativa.count("{") - tentativa.count("}")
+        abrir_colch = tentativa.count("[") - tentativa.count("]")
+        tentativa += "]" * abrir_colch + "}" * abrir_chave
+        return json.loads(tentativa)
 
 
 def main():
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     if not api_key:
-        print("ANTHROPIC_API_KEY não definida — pulando curadoria.", file=sys.stderr)
+        print("ANTHROPIC_API_KEY n\u00e3o definida \u2014 pulando curadoria.", file=sys.stderr)
         print(json.dumps([]))
         return
 
@@ -148,12 +158,20 @@ def main():
     lote = pendentes[: config["max_itens_por_lote_ia"]]
     prompt = montar_prompt(config, lote)
 
-    try:
-        resposta = chamar_api(config, prompt, api_key)
-        texto = "".join(bloco.get("text", "") for bloco in resposta.get("content", []))
-        resultado = extrair_json(texto)
-    except Exception as exc:
-        print(f"falha na chamada da IA: {exc}", file=sys.stderr)
+    import time
+    resultado = None
+    for tentativa in range(3):
+        try:
+            resposta = chamar_api(config, prompt, api_key)
+            texto = "".join(bloco.get("text", "") for bloco in resposta.get("content", []))
+            resultado = extrair_json(texto)
+            break
+        except Exception as exc:
+            print(f"tentativa {tentativa + 1}/3 \u2014 falha: {exc}", file=sys.stderr)
+            if tentativa < 2:
+                time.sleep(5)
+    if resultado is None:
+        print("todas as tentativas falharam \u2014 pulando curadoria.", file=sys.stderr)
         print(json.dumps([]))
         return
 
@@ -178,7 +196,7 @@ def main():
         }
         novos_ganchos.append(linha)
 
-    # grava ganchos novos (acumulando com o histórico já existente)
+    # grava ganchos novos (acumulando com o hist\u00f3rico j\u00e1 existente)
     historico = carregar_csv(GANCHOS_PATH, CAMPOS_GANCHOS)
     ids_existentes = {linha["id"] for linha in historico}
     for linha in novos_ganchos:
@@ -192,8 +210,8 @@ def main():
         for linha in historico:
             escritor.writerow({c: linha.get(c, "") for c in CAMPOS_GANCHOS})
 
-    # marca TODO o lote avaliado como processado, escolhido ou não,
-    # para não gastar API de novo com o que já foi analisado
+    # marca TODO o lote avaliado como processado, escolhido ou n\u00e3o,
+    # para n\u00e3o gastar API de novo com o que j\u00e1 foi analisado
     processados.update(item["id"] for item in lote)
     salvar_processados(processados)
 
