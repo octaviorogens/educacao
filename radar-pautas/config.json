@@ -1,57 +1,42 @@
 {
-  "titulo": "Radar de Pautas — IA, Narrativa e Educação",
-  "subtitulo": "Curadoria diária de fatos e discussões internacionais para sugestão de pauta à imprensa",
+    "titulo": "Radar de Pautas — IA, Narrativa e Educação",
+    "subtitulo": "Curadoria diária de fatos e discussões internacionais para sugestão de pauta à imprensa",
 
-  "modelo_ia": "claude-sonnet-5",
-  "limiar_pontuacao": 7,
-  "max_itens_por_dia": 6,
-  "max_itens_por_lote_ia": 60,
+    "modelo_ia": "claude-sonnet-5",
+    "limiar_pontuacao": 7,
+    "max_itens_por_dia": 6,
+    "max_itens_por_lote_ia": 60,
 
-  "perfil_fonte": {
-    "nome": "Luís Octávio Rogens de Melo Alves",
-    "forma_de_tratamento": "Octávio",
-    "cargo": "Professor de Língua Portuguesa, Produção de Textos e Empreendedorismo Criativo no Colégio Presbiteriano Mackenzie (Higienópolis, São Paulo)",
-    "formacao": "Mestre em Língua Portuguesa pela PUC-SP; doutorando em Tecnologias da Inteligência e Design Digital (TIDD) na PUC-SP",
-    "linha_de_pesquisa": "Crise da autoridade narrativa na modernidade e contemporaneidade e seus efeitos sobre escrita, humor e produção de sentido; desenvolve a noção de 'Arquiteturista' como dispositivo de modelagem formal dessas tensões; investiga como a IA entra num campo já transformado pela crise da experiência transmissível e pela performatividade do eu",
-    "experiencia_relevante": [
-      "Palestras sobre Inteligência Artificial na Educação em 2024 e 2025",
-      "Entrevista à Gazeta do Povo sobre ChatGPT em 2023",
-      "Projeto pedagógico 'ChatGPT, eu escrevo para você' no Colégio Presbiteriano Mackenzie",
-      "Participação em eventos como Rio2C e HackTown com falas sobre IA, criatividade e educação",
-      "Coordena projetos interdisciplinares como ExpoMACK e FEBRACE"
+    "temas_de_interesse": [
+          "IA na sala de aula e no letramento",
+          "avaliação e correção de textos por IA",
+          "formação de professores para IA",
+          "autoria, plágio e autenticidade na escrita escolar",
+          "humor como resposta a crises de autoridade e de sentido",
+          "narrativa, autoficção e testemunho na era da IA",
+          "impacto da IA na produção de textos e no ensino de literatura"
     ],
-    "temas_que_pode_comentar": [
-      "IA na sala de aula e no letramento",
-      "avaliação e correção de textos por IA",
-      "formação de professores para IA",
-      "autoria, plágio e autenticidade na escrita escolar",
-      "humor como resposta a crises de autoridade e de sentido",
-      "narrativa, autoficção e testemunho na era da IA",
-      "impacto da IA na produção de textos e no ensino de literatura"
+
+    "criterios_noticiabilidade": [
+          "curiosidade: o fato tem um ângulo inusitado, contraintuitivo ou pouco explorado na imprensa brasileira",
+          "ineditismo: é recente (idealmente das últimas duas semanas) e ainda não é lugar-comum na cobertura brasileira",
+          "internacionalidade: prioridade a fatos, estudos, políticas ou casos de outros países, que ainda não têm equivalente comentado no Brasil",
+          "conexão com IA, narrativa ou educação: professores, avaliação, currículo, escrita, leitura, autoria, humor, autoficção, testemunho, ou qualquer cruzamento entre esses temas e inteligência artificial",
+          "capacidade de virar pauta: dá para transformar em matéria com um especialista comentando, não é só um anúncio de produto"
     ],
-    "contato": "PREENCHER: e-mail para contato da assessoria/jornalista"
-  },
 
-  "criterios_noticiabilidade": [
-    "curiosidade: o fato tem um ângulo inusitado, contraintuitivo ou pouco explorado na imprensa brasileira",
-    "ineditismo: é recente (idealmente das últimas duas semanas) e ainda não é lugar-comum na cobertura brasileira",
-    "internacionalidade: prioridade a fatos, estudos, políticas ou casos de outros países, que ainda não têm equivalente comentado no Brasil",
-    "conexão com IA, narrativa ou educação: professores, avaliação, currículo, escrita, leitura, autoria, humor, autoficção, testemunho, ou qualquer cruzamento entre esses temas e inteligência artificial",
-    "capacidade de virar pauta: dá para transformar em matéria com um especialista comentando, não é só um anúncio de produto"
-  ],
-
-  "consultas": [
-    {"termo": "AI classroom teachers", "hl": "en-US", "gl": "US"},
-    {"termo": "AI grading students essays", "hl": "en-US", "gl": "US"},
-    {"termo": "artificial intelligence curriculum policy", "hl": "en-US", "gl": "US"},
-    {"termo": "students cheating AI study", "hl": "en-US", "gl": "US"},
-    {"termo": "AI teacher training school", "hl": "en-US", "gl": "US"},
-    {"termo": "chatbot storytelling narrative", "hl": "en-US", "gl": "US"},
-    {"termo": "AI authorship plagiarism writing", "hl": "en-US", "gl": "US"},
-    {"termo": "unusual AI experiment education", "hl": "en-US", "gl": "US"},
-    {"termo": "AI humor comedy writing", "hl": "en-US", "gl": "US"},
-    {"termo": "inteligencia artificial en el aula", "hl": "es-419", "gl": "US"},
-    {"termo": "intelligence artificielle éducation enseignants", "hl": "fr-FR", "gl": "FR"},
-    {"termo": "AI university assessment exams", "hl": "en-US", "gl": "US"}
-  ]
+    "consultas": [
+          {"termo": "AI classroom teachers", "hl": "en-US", "gl": "US"},
+          {"termo": "AI grading students essays", "hl": "en-US", "gl": "US"},
+          {"termo": "artificial intelligence curriculum policy", "hl": "en-US", "gl": "US"},
+          {"termo": "students cheating AI study", "hl": "en-US", "gl": "US"},
+          {"termo": "AI teacher training school", "hl": "en-US", "gl": "US"},
+          {"termo": "chatbot storytelling narrative", "hl": "en-US", "gl": "US"},
+          {"termo": "AI authorship plagiarism writing", "hl": "en-US", "gl": "US"},
+          {"termo": "unusual AI experiment education", "hl": "en-US", "gl": "US"},
+          {"termo": "AI humor comedy writing", "hl": "en-US", "gl": "US"},
+          {"termo": "inteligencia artificial en el aula", "hl": "es-419", "gl": "US"},
+          {"termo": "intelligence artificielle éducation enseignants", "hl": "fr-FR", "gl": "FR"},
+          {"termo": "AI university assessment exams", "hl": "en-US", "gl": "US"}
+    ]
 }
